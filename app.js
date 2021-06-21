@@ -1,34 +1,45 @@
 document.getElementById('loanForm').addEventListener('submit', calculate);
 
 function calculate(e) {
-  //dom variables
-  
-  //input
+  //dom variables  
   const loanAmount = document.getElementById('loanAmount');
   const interestRate = document.getElementById('interest');
   const yearsToRepay = document.getElementById('years');
   const monthlyPayment = document.getElementById('monthlyPayment');
   const totalPayment = document.getElementById('totalPayment');
   const totalInterest = document.getElementById('totalInterest');
+
   //calculation variables
   const principle = parseFloat(loanAmount.value);
   const rate = parseFloat(interestRate.value) / 100 / 12; //rate per period
   const payments = parseFloat(yearsToRepay.value) * 12;
 
-  //monthly payment
+  //calculate monthly payment
   let monthly = principle * (rate * Math.pow(1 + rate, payments)) / (Math.pow(1 + rate, payments) - 1);
 
-  monthly = monthly.toFixed(2);
-
-  monthlyPayment.value = monthly;
-
-  //total payment
-  let total = monthly * payments;
-  totalPayment.value = total.toFixed(2);
-
-  //total interest
-  let totalI = totalPayment.value - principle;
-  totalInterest.value = totalI.toFixed(2);
+  //output results if monthly is a finite number
+  if (isFinite(monthly)) {
+    monthlyPayment.value = monthly.toFixed(2);
+    totalPayment.value = (monthly * payments).toFixed(2);
+    totalInterest.value = ((monthly * payments) - principle).toFixed(2);
+  } else {
+    showError('Please check your numbers');
+  }
 
   e.preventDefault();
+}
+
+function showError(message) {
+  //create div error message
+  const errorDiv = document.createElement('div');
+  //add bootstrap classes
+  errorDiv.className = 'alert alert-danger';
+  //add text to div
+  errorDiv.appendChild(document.createTextNode(message));
+  //insert error div at top of card body
+  document.querySelector('.card-body').prepend(errorDiv);
+  //set a timeout for error message
+  setTimeout(function() {
+    errorDiv.remove();
+  }, 4000)
 }
