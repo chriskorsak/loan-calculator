@@ -1,6 +1,12 @@
-document.getElementById('loanForm').addEventListener('submit', calculate);
+document.getElementById('loanForm').addEventListener('submit', function(e) {
+  //make sure results is hidden
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  setTimeout(calculate, 2000);
+  e.preventDefault();
+});
 
-function calculate(e) {
+function calculate() {
   //dom variables  
   const loanAmount = document.getElementById('loanAmount');
   const interestRate = document.getElementById('interest');
@@ -22,11 +28,16 @@ function calculate(e) {
     monthlyPayment.value = monthly.toFixed(2);
     totalPayment.value = (monthly * payments).toFixed(2);
     totalInterest.value = ((monthly * payments) - principle).toFixed(2);
+
+    //show results div
+    document.getElementById('results').style.display = 'block';
+    //hide loading div
+    document.getElementById('loading').style.display = 'none';
   } else {
     showError('Please check your numbers');
+    //hide loading div
+    document.getElementById('loading').style.display = 'none';
   }
-
-  e.preventDefault();
 }
 
 function showError(message) {
